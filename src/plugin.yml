@@ -1,0 +1,22 @@
+name: RealJobs
+main: fr.crafter.tickleman.realjobs.RealJobsPlugin
+version: 0.03
+website: http://plugins.crafter.fr/tickleman/RealJobs/
+author: tickleman
+depend: [RealPlugin,RealStats]
+commands:
+  jobreload:
+    aliases: [jr]
+    description: Reload jobs configuration
+  jobxp:
+    aliases: [xp]
+    description: Job XPerience
+  addjob:
+    aliases: [aj]
+    description: Add player jobs
+  remjob:
+    aliases: [rj]
+    description: Remove player jobs
+  setjob:
+    aliases: [sj]
+    description: Set player jobs

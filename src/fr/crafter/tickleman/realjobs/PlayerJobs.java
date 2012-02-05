@@ -4,7 +4,8 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 
 import fr.crafter.tickleman.realplugin.RealFileTools;
@@ -13,13 +14,13 @@ import fr.crafter.tickleman.realplugin.RealFileTools;
 public class PlayerJobs
 {
 
-	private Set<Job> jobs = new HashSet<Job>();
+	private Map<Job, Long> jobs = new HashMap<Job, Long>();
 
 	//---------------------------------------------------------------------------------------- addJob
-	public boolean addJob(Job job)
+	public boolean addJob(Job job, Long xp)
 	{
 		if (job != null) {
-			jobs.add(job);
+			jobs.put(job, xp);
 			return true;
 		} else {
 			return false;
@@ -29,7 +30,7 @@ public class PlayerJobs
 	//--------------------------------------------------------------------------------------- getJobs
 	public Set<Job> getJobs()
 	{
-		return jobs;
+		return jobs.keySet();
 	}
 
 	//------------------------------------------------------------------------------------ playerJobs
@@ -51,7 +52,9 @@ public class PlayerJobs
 				));
 				String buffer;
 				while ((buffer = reader.readLine()) != null) {
-					jobs.add(plugin.getJob(buffer));
+					String[] data = buffer.split(";");
+					Job job = plugin.getJob(data[0]); 
+					addJob(job, job.getXp(plugin, playerName));
 				}
 				reader.close();
 			} catch (Exception e) {
@@ -77,8 +80,8 @@ public class PlayerJobs
 			BufferedWriter writer = new BufferedWriter(new FileWriter(
 				plugin.getDataFolder().getPath() + "/" + playerName.toLowerCase() + ".txt"
 			));
-			for (Job job : jobs) {
-				writer.write(job.getName() + "\n");
+			for (Job job : jobs.keySet()) {
+				writer.write(job.getName() + ";" + job.getXp(plugin, playerName) + "\n");
 			}
 			writer.close();
 		} catch (Exception e) {
@@ -87,11 +90,11 @@ public class PlayerJobs
 	}
 
 	//---------------------------------------------------------------------------------------- setJob
-	public boolean setJob(Job job)
+	public boolean setJob(Job job, Long xp)
 	{
 		jobs.clear();
 		if (job != null) {
-			jobs.add(job);
+			addJob(job, xp);
 			return true;
 		} else {
 			return false;

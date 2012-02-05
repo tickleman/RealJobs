@@ -6,6 +6,9 @@ import java.util.Map;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event.Priority;
+import org.bukkit.event.Event.Type;
+import org.bukkit.plugin.PluginManager;
 
 import fr.crafter.tickleman.realplugin.RealPlugin;
 import fr.crafter.tickleman.realstats.RealStatsPlugin;
@@ -56,16 +59,13 @@ public class RealJobsPlugin extends RealPlugin
 			} else {
 				if (args.length == 1) {
 					if (sender.isOp()) {
-						Player player = getServer().getPlayer(args[0]);
-						if (player instanceof Player) {
-							for (Job job : getPlayerJobs(args[0]).getJobs()) {
-								sender.sendMessage(
-									tr("+player +job : +xp xp")
-									.replace("+player", args[0])
-									.replace("+xp", "" + job.getXp(this, player))
-									.replace("+job", tr(job.getName()))
-								);
-							}
+						for (Job job : getPlayerJobs(args[0]).getJobs()) {
+							sender.sendMessage(
+								tr("+player +job : +xp xp")
+								.replace("+player", args[0])
+								.replace("+xp", "" + job.getXp(this, args[0]))
+								.replace("+job", tr(job.getName()))
+							);
 						}
 					}
 				} else if (!(sender instanceof Player)) {
@@ -75,7 +75,7 @@ public class RealJobsPlugin extends RealPlugin
 					for (Job job : getPlayerJobs(player.getName()).getJobs()) {
 						sender.sendMessage(
 							tr("+job : +xp xp")
-							.replace("+xp", "" + job.getXp(this, (Player)sender))
+							.replace("+xp", "" + job.getXp(this, ((Player)sender).getName()))
 							.replace("+job", tr(job.getName()))
 						);
 					}
@@ -92,7 +92,8 @@ public class RealJobsPlugin extends RealPlugin
 			&& sender.isOp()
 		) {
 			for (int i = 1; i < args.length; i++) {
-				if (getPlayerJobs(args[0]).addJob(getJob(args[i]))) {
+				Job job = getJob(args[i]);
+				if (getPlayerJobs(args[0]).addJob(job, job.getXp(this, args[0]))) {
 					sender.sendMessage(tr("+player is now +job").replace("+job", tr(args[i])).replace("+player", args[0]));
 				} else {
 					sender.sendMessage(tr("Unknown job +job").replace("+job", args[i]));
@@ -117,14 +118,16 @@ public class RealJobsPlugin extends RealPlugin
 			&& (args.length >= 2)
 			&& sender.isOp()
 		) {
-			if (getPlayerJobs(args[0]).setJob(getJob(args[1]))) {
+			Job job = getJob(args[1]);
+			if (getPlayerJobs(args[0]).setJob(job, job.getXp(this, args[0]))) {
 				sender.sendMessage(tr("+player is now +job").replace("+job", tr(args[1])).replace("+player", args[0]));
 			} else {
 				sender.sendMessage(tr("Unknown job +job").replace("+job", args[1]));
 			}
 			if (args.length >= 3) {
 				for (int i = 2; i < args.length; i++) {
-					if (getPlayerJobs(args[0]).addJob(getJob(args[i]))) {
+					job = getJob(args[i]);
+					if (getPlayerJobs(args[0]).addJob(job, job.getXp(this, args[0]))) {
 						sender.sendMessage(tr("+player is now +job").replace("+job", tr(args[i])).replace("+player", args[0]));
 					} else {
 						sender.sendMessage(tr("Unknown job +job").replace("+job", args[i]));
@@ -151,8 +154,11 @@ public class RealJobsPlugin extends RealPlugin
 	@Override
 	public void onEnable()
 	{
-		jobs = new Jobs(this).loadYamlFile();
 		super.onEnable();
+		jobs = new Jobs(this).loadYamlFile();
+		RealJobsPlayerListener playerListener  = new RealJobsPlayerListener(this);
+		PluginManager pm = getServer().getPluginManager();
+		pm.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Lowest, this);
 	}
 
 }

@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.bukkit.entity.Player;
-
 import fr.crafter.tickleman.realstats.RealPlayerStats;
 
 //############################################################################################# Job
@@ -42,10 +40,10 @@ public class Job
 	}
 
 	//----------------------------------------------------------------------------------------- getXp
-	public long getXp(RealJobsPlugin plugin, Player player)
+	public long getXp(RealJobsPlugin plugin, String playerName)
 	{
 		long totalXp = 0;
-		RealPlayerStats stats = plugin.getRealStatsPlugin().getPlayerStats(player);
+		RealPlayerStats stats = plugin.getRealStatsPlugin().getPlayerStats(playerName);
 		for (Integer action : xp.keySet()) {
 			for (Integer xpValue : xp.get(action)) {
 				totalXp += stats.getXp(action, xpValue);

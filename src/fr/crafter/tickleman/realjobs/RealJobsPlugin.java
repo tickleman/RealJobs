@@ -6,9 +6,6 @@ import java.util.Map;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event.Priority;
-import org.bukkit.event.Event.Type;
-import org.bukkit.plugin.PluginManager;
 
 import fr.crafter.tickleman.realplugin.RealPlugin;
 import fr.crafter.tickleman.realstats.RealStatsPlugin;
@@ -156,9 +153,7 @@ public class RealJobsPlugin extends RealPlugin
 	{
 		super.onEnable();
 		jobs = new Jobs(this).loadYamlFile();
-		RealJobsPlayerListener playerListener  = new RealJobsPlayerListener(this);
-		PluginManager pm = getServer().getPluginManager();
-		pm.registerEvent(Type.PLAYER_QUIT, playerListener, Priority.Lowest, this);
+		getServer().getPluginManager().registerEvents(new RealJobsListeners(this), this);
 	}
 
 }

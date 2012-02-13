@@ -49,7 +49,6 @@ public class Jobs
 				if (jobsYml.get(jobName) != null) {
 					Job job = new Job(jobName, jobsYml.get(jobName));
 					jobs.put(jobName, job);
-					System.out.println("job = " + job.toString());
 				}
 			}
 		} catch (IOException e) {

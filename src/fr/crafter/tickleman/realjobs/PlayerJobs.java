@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -50,15 +51,29 @@ public class PlayerJobs
 				BufferedReader reader = new BufferedReader(new FileReader(
 					plugin.getDataFolder().getPath() + "/" + playerName.toLowerCase() + ".txt"
 				));
-				String buffer;
-				while ((buffer = reader.readLine()) != null) {
-					String[] data = buffer.split(";");
-					Job job = plugin.getJob(data[0]); 
-					addJob(job, job.getXp(plugin, playerName));
+				try {
+					String buffer;
+					while ((buffer = reader.readLine()) != null) {
+						String[] data = buffer.split(";");
+						Job job = plugin.getJob(data[0]); 
+						addJob(job, job.getXp(plugin, playerName));
+					}
+				} catch (IOException e) {
+					System.out.println(
+						"[RealJobs] [SEVERE] could not load " + plugin.getDataFolder().getPath() + "/"
+						+ playerName.toLowerCase() + ".txt"
+					);
+					System.out.println("[RealJobs] [SEVERE] " + e.getMessage());
+					e.printStackTrace(System.out);
 				}
 				reader.close();
-			} catch (Exception e) {
-				e.printStackTrace();
+			} catch (IOException e) {
+				System.out.println(
+					"[RealJobs] [SEVERE] could not load " + plugin.getDataFolder().getPath() + "/"
+					+ playerName.toLowerCase() + ".txt"
+				);
+				System.out.println("[RealJobs] [SEVERE] " + e.getMessage());
+				e.printStackTrace(System.out);
 			}
 		}
 	}
@@ -80,12 +95,26 @@ public class PlayerJobs
 			BufferedWriter writer = new BufferedWriter(new FileWriter(
 				plugin.getDataFolder().getPath() + "/" + playerName.toLowerCase() + ".txt"
 			));
-			for (Job job : jobs.keySet()) {
-				writer.write(job.getName() + ";" + job.getXp(plugin, playerName) + "\n");
+			try {
+				for (Job job : jobs.keySet()) {
+					writer.write(job.getName() + ";" + job.getXp(plugin, playerName) + "\n");
+				}
+			} catch (IOException e) {
+				System.out.println(
+					"[RealJobs] [SEVERE] could not save " + plugin.getDataFolder().getPath() + "/"
+					+ playerName.toLowerCase() + ".txt"
+				);
+				System.out.println("[RealJobs] [SEVERE] " + e.getMessage());
+				e.printStackTrace(System.out);
 			}
 			writer.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+		} catch (IOException e) {
+			System.out.println(
+				"[RealJobs] [SEVERE] could not save " + plugin.getDataFolder().getPath() + "/"
+				+ playerName.toLowerCase() + ".txt"
+			);
+			System.out.println("[RealJobs] [SEVERE] " + e.getMessage());
+			e.printStackTrace(System.out);
 		}
 	}
 

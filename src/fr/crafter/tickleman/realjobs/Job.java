@@ -29,6 +29,13 @@ public class Job
 		this.name = name;
 		@SuppressWarnings("unchecked")
 		Map<String, Object> jobYml = (Map<String, Object>)jobYmlObject;
+		if (jobYml.containsKey("targets")) {
+			@SuppressWarnings("unchecked")
+			List<Integer> targetValues = (List<Integer>)jobYml.get("targets");
+			for (Integer targetValue : targetValues) {
+				targets.add(targetValue);
+			}
+		}
 		if (jobYml.containsKey("tools")) {
 			@SuppressWarnings("unchecked")
 			List<Integer> toolValues = (List<Integer>)jobYml.get("tools");
@@ -40,13 +47,15 @@ public class Job
 			@SuppressWarnings("unchecked")
 			Map<String, Object> xpYml = (Map<String, Object>)jobYml.get("xp");
 			for (String xpActionName : xpYml.keySet()) {
-				int action = RealPlayerStats.actionFromString(xpActionName);
+				Integer action = RealPlayerStats.actionFromString(xpActionName);
 				if (action > 0) {
 					@SuppressWarnings("unchecked")
 					List<Integer> xpValues = (List<Integer>)xpYml.get(xpActionName);
 					xp.put(action, xpValues);
-					for (Integer xpValue : xpValues) {
-						targets.add(xpValue);
+					if (action.equals(RealPlayerStats.BREAK)) {
+						for (Integer xpValue : xpValues) {
+							targets.add(xpValue);
+						}
 					}
 				}
 			}
@@ -75,21 +84,18 @@ public class Job
 	//----------------------------------------------------------------------------- hasTargetMaterial
 	public boolean hasTargetMaterial(Material material)
 	{
-		System.out.println("hasTargetMaterial " + material.getId());
-		return tools.contains(material.getId());
+		return targets.contains(material.getId());
 	}
 
 	//------------------------------------------------------------------------------- hasTargetEntity
 	public boolean hasTargetEntity(Entity entity)
 	{
-		System.out.println("hasTargetEntity " + entity.getEntityId());
-		return tools.contains(entity.getEntityId());
+		return targets.contains(entity.getEntityId());
 	}
 
 	//--------------------------------------------------------------------------------------- hasTool
 	public boolean hasTool(Material material)
 	{
-		System.out.println("hasTool " + material.getId());
 		return tools.contains(material.getId());
 	}
 
@@ -97,14 +103,18 @@ public class Job
 	@Override
 	public String toString()
 	{
-		String string = name + " :";
+		StringBuffer string = new StringBuffer(name + " :");
 		for (Integer action : xp.keySet()) {
-			string += " [" + action + "]";
+			string.append(" [").append(action).append("]");
 			for (Integer xpValue : xp.get(action)) {
-				string += " " + xpValue;
+				string.append(" ").append(xpValue.toString());
 			}
 		}
-		return string;
+		string.append("\n   targets =");
+		for (Integer target : targets) {
+			string.append(" ").append(target.toString());
+		}
+		return string.toString();
 	}
 
 }

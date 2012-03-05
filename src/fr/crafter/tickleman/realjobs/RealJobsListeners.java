@@ -4,6 +4,7 @@ import java.util.Set;
 
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -22,6 +23,7 @@ public class RealJobsListeners implements Listener
 	}
 
 	//---------------------------------------------------------------------------- onBlockDamageEvent
+	// @EventHandler
 	public void onBlockDamageEvent(BlockDamageEvent event)
 	{
 		Player player = event.getPlayer();
@@ -32,17 +34,18 @@ public class RealJobsListeners implements Listener
 				ItemStack itemInHand = player.getItemInHand();
 				if (
 					(
-						(itemInHand == null && job.hasTool(Material.AIR))
-						|| itemInHand != null && job.hasTool(itemInHand.getType())
+						((itemInHand == null) && job.hasTool(Material.AIR))
+						|| (itemInHand != null) && job.hasTool(itemInHand.getType())
 					) && job.hasTargetMaterial(event.getBlock().getType())
 				) {
-					System.out.print("++ job effect for " + job.getName());
+					player.sendMessage("++ job effect for " + job.getName());
 				}
 			}
 		}
 	}
 
 	//---------------------------------------------------------------------------------- onPlayerQuit
+	@EventHandler
 	public void onPlayerQuit(PlayerQuitEvent event)
 	{
 		String playerName = event.getPlayer().getName();

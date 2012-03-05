@@ -154,6 +154,9 @@ public class RealJobsPlugin extends RealPlugin
 		super.onEnable();
 		jobs = new Jobs(this).loadYamlFile();
 		getServer().getPluginManager().registerEvents(new RealJobsListeners(this), this);
+		if (getRealConfig().debug) {
+			System.out.println(jobs.toString());
+		}
 	}
 
 }

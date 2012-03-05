@@ -23,6 +23,7 @@ Pour=Fondeur
 Railwayman=Cheminot
 Sailor=Marin
 Shatterer=Destructeur
+Shepherd=Berger
 Social-worker=Assistant-social
 Sorcerer=Sorcier
 Stockbreeder=Eleveur

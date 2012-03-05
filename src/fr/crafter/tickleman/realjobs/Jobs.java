@@ -57,4 +57,14 @@ public class Jobs
 		return this;
 	}
 
+	//-------------------------------------------------------------------------------------- toString
+	public String toString()
+	{
+		StringBuffer string = new StringBuffer();
+		for (String jobName : jobs.keySet()) {
+			string.append(jobs.get(jobName).toString()).append("\n");
+		}
+		return string.toString();
+	}
+
 }

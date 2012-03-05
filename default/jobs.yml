@@ -42,6 +42,7 @@ Explorer:
 Farmer:
   xp:
     break: [39, 40, 86, 103, 106, 107]
+    cut: [4]
     place: [59, 83, 85, 106, 115, 295, 338, 361, 362]
     rightclick: [2, 3]
 Fisherman:
@@ -79,6 +80,10 @@ Sailor:
 Shatterer:
   xp:
     break: [4, 5, 20, 24, 25, 35, 41, 42, 43, 44, 45, 47, 53, 57, 65, 67, 80, 84, 85, 91, 96, 97, 98, 101, 102, 107, 108, 109, 112, 113, 114, 321, 324, 330]
+Shepherd:
+  xp:
+    cut: [4]
+    feed: [4]
 Social-worker:
   xp:
     popularity: [1]
